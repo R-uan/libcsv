@@ -1,16 +1,13 @@
+#!/bin/sh
+
 apk update && \ 
     apk add --no-cache build-base
 
-g++ -c -Wall -Werror -fPIC libcsv.cpp -o libcsv.o
-if [ $? -ne 0 ]; then
-    echo "Compilation of libcsv.cpp failed."
-    exit 1
-fi
+gcc -c -Wall -Werror -fPIC libcsv.c -o libcsv.o
 
-g++ -shared -o libcsv.so libcsv.o
-if [ $? -ne 0 ]; then
-    echo "Building shared library libcsv.so failed."
-    exit 1
-fi
+gcc -shared -o libcsv.so libcsv.o
 
-echo "Shared library built successfully."
+export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+
+gcc -o main main.c -L. -lcsv
+
